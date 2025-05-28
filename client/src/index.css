@@ -25,3 +25,9 @@
     line-height: 44px;
   }
 }
+
+.auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem; /* optional spacing between grid items */
+}
