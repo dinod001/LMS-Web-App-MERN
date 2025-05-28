@@ -3,7 +3,7 @@ import { assets } from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
 
 const SearchBar = ({ data }) => {
-  const [input, setInput] = useState(data ? data : "");
+  const [input, setInput] = useState(data || "");
 
   const navigate = useNavigate();
 
