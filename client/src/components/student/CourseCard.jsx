@@ -20,6 +20,7 @@ const CourseCard = ({ course }) => {
           <div className="flex">
             {[...Array(5)].map((_, i) => (
               <img
+                key={i}
                 src={
                   i < Math.floor(calculateRatings(course))
                     ? assets.star
