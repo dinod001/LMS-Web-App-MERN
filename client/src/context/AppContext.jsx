@@ -66,6 +66,9 @@ export const AppContextProvider = (props) => {
     isEducator,
     setIsEducator,
     calculateRatings,
+    calculateChapterTime,
+    calculateCourseDuration,
+    calculateNoOfLectures,
   };
 
   return (
