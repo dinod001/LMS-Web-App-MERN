@@ -12,13 +12,21 @@ await connectDB();
 
 //Middlewares
 app.use(cors());
+// Body parser with rawBody support
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf.toString(); // Needed for Svix
+    },
+  })
+);
 
 //Routes
 app.get("/", (req, res) => {
   res.send("server runnning");
 });
 
-app.post("/clerk", express.json(), clerkWebhooks);
+app.post("/clerk", clerkWebhooks);
 
 //port
 const PORT = process.env.PORT || 5000;
