@@ -1,38 +1,23 @@
 import express from "express";
 import cors from "cors";
+import bodyParser from "body-parser"; // ✅
+
 import "dotenv/config";
 import connectDB from "./configs/mongodb.js";
 import { clerkWebhooks } from "./controllers/webHooks.js";
 
-//initializing express
 const app = express();
-
-//connect to Database
 await connectDB();
-
-//Middlewares
 app.use(cors());
 
-//Routes
+// ✅ Raw body only for Clerk
+app.use("/clerk", bodyParser.raw({ type: "*/*" }));
+
 app.get("/", (req, res) => {
-  res.send("server runnning");
+  res.send("server running");
 });
 
-app.post("/clerk", express.json(), clerkWebhooks);
+app.post("/clerk", clerkWebhooks);
 
-app.post(
-  "/clerk",
-  express.json(),
-  (req, res, next) => {
-    console.log("Webhook received:", req.headers, req.body);
-    next();
-  },
-  clerkWebhooks
-);
-
-//port
 const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`server is running on ${PORT}`);
-});
+app.listen(PORT, () => console.log(`server is running on ${PORT}`));
