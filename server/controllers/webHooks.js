@@ -6,6 +6,7 @@ export const clerkWebhooks = async (req, res) => {
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
     const payload = req.body; // raw Buffer
+    console.log(payload);
 
     const headers = {
       "svix-id": req.headers["svix-id"],
@@ -24,7 +25,7 @@ export const clerkWebhooks = async (req, res) => {
           _id: data.id,
           email: data.email_addresses[0].email_address,
           name: `${data.first_name} ${data.last_name}`,
-          imageUrl: data.imageUrl,
+          imageUrl: data.image_url,
         });
         break;
 
