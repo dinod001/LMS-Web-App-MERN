@@ -83,8 +83,6 @@ export const stripeWebhooks = async (request, response) => {
   // Handle the event
   switch (event.type) {
     case "payment_intent.succeeded": {
-      console.log("ok");
-
       const paymentIntent = event.data.object;
       const paymentIntentId = paymentIntent.id;
 
@@ -108,6 +106,7 @@ export const stripeWebhooks = async (request, response) => {
 
       purchaseData.status = "completed";
       await purchaseData.save();
+      console.log(purchaseData.status);
 
       break;
     }
