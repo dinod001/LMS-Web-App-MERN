@@ -20,6 +20,16 @@ app.get("/", (req, res) => {
 
 app.post("/clerk", express.json(), clerkWebhooks);
 
+app.post(
+  "/clerk",
+  express.json(),
+  (req, res, next) => {
+    console.log("Webhook received:", req.headers, req.body);
+    next();
+  },
+  clerkWebhooks
+);
+
 //port
 const PORT = process.env.PORT || 5000;
 
