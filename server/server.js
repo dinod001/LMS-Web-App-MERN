@@ -40,7 +40,15 @@ app.post(
 app.use("/api/educator", express.json(), educatorRouter);
 app.use("/api/course", express.json(), courseRouter);
 app.use("/api/user", express.json(), userRouter);
-app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhooks);
+app.post(
+  "/stripe",
+  express.raw({ type: "application/json" }),
+  (req, res, next) => {
+    console.log("💥 Stripe webhook hit");
+    next();
+  },
+  stripeWebhooks
+);
 
 //port
 const PORT = process.env.PORT || 5000;
