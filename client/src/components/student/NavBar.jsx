@@ -6,6 +6,7 @@ import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import yt_logo from "../../assets/yt_logo.png";
+import { useEffect } from "react";
 
 const NavBar = () => {
   const { openSignIn } = useClerk();
@@ -13,6 +14,11 @@ const NavBar = () => {
   const { navigate, isEducator, backendUrl, setIsEducator, getToken } =
     useContext(AppContext);
 
+  useEffect(() => {
+    {
+      console.log(isEducator);
+    }
+  }, []);
   const becomeEducator = async () => {
     try {
       if (isEducator) {
@@ -78,7 +84,7 @@ const NavBar = () => {
       </div>
 
       {/*For phone screen*/}
-      <div className="md:hidden flex items-center gap-2 sm:gap-5 text-gray-500">
+      <div className="md:hidden flex items-center gap-2 sm:gap-5 text-white">
         <div className="md:hidden flex items-center gap-1 sm:gap-2 max-sm:text-xs ">
           {user && (
             <>
@@ -94,7 +100,7 @@ const NavBar = () => {
           <UserButton />
         ) : (
           <button onClick={() => openSignIn()}>
-            <img src={assets.user_icon} alt="Profile" />
+            <img src={assets.user_icon} alt="Profile" className="w-10 h-11" />
           </button>
         )}
       </div>

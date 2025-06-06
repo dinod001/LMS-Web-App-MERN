@@ -11,7 +11,7 @@ export const AppContext = createContext();
 export const AppContextProvider = (props) => {
   const currency = import.meta.env.VITE_CURRENCY;
   const [allCourses, seALLtCourses] = useState([]);
-  const [isEducator, setIsEducator] = useState(true);
+  const [isEducator, setIsEducator] = useState(false);
   const [userData, setuserData] = useState(null);
   const [enrolledCourse, setEnrolledCourse] = useState([]);
 
