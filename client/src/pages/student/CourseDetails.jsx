@@ -6,6 +6,8 @@ import { assets } from "../../assets/assets";
 import humanizeDuration from "humanize-duration";
 import Footer from "../../components/student/Footer";
 import YouTube from "react-youtube";
+import axios from "axios";
+import { toast } from "react-toastify";
 const CourseDetails = () => {
   const { id } = useParams();
   const [courseData, setCourseData] = useState(null);
@@ -19,11 +21,49 @@ const CourseDetails = () => {
     calculateChapterTime,
     currency,
     calculateNoOfLectures,
+    backendUrl,
+    userData,
+    getToken,
   } = useContext(AppContext);
 
   const fetchCourseData = async () => {
-    const findCourse = allCourses.find((course) => course._id === id);
-    setCourseData(findCourse);
+    try {
+      const { data } = await axios.get(backendUrl + "/api/course/" + id);
+      if (data.success) {
+        setCourseData(data.courseData);
+      } else {
+        toast.error(data.courseData);
+      }
+    } catch (error) {
+      toast.error(data.message);
+    }
+  };
+
+  const enrollCourse = async () => {
+    try {
+      if (!userData) {
+        return toast.warn("Login to enroll");
+      }
+      if (isAlreadyEnrolled) {
+        return toast.warn("Already Enrolled");
+      }
+
+      const token = await getToken();
+
+      const { data } = await axios.post(
+        backendUrl + "/api/user/purchase",
+        { courseId: courseData._id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (data.success) {
+        const { session_url } = data;
+        window.location.replace(session_url);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const toggleSection = (index) => {
@@ -33,6 +73,12 @@ const CourseDetails = () => {
   useEffect(() => {
     fetchCourseData();
   }, [allCourses]);
+
+  useEffect(() => {
+    if (userData && courseData) {
+      setIsAlreadyEnrolled(userData.enrolledCourses.includes(courseData._id));
+    }
+  }, [userData, courseData]);
 
   return courseData ? (
     <>
@@ -80,7 +126,9 @@ const CourseDetails = () => {
 
           <p>
             Course by{" "}
-            <span className="text-blue-600 underline">CodeSage LK</span>
+            <span className="text-blue-600 underline">
+              {courseData.educator.name}
+            </span>
           </p>
 
           {/*course content*/}
@@ -241,7 +289,10 @@ const CourseDetails = () => {
                 </div>
               </div>
 
-              <button className="md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium">
+              <button
+                onClick={enrollCourse}
+                className="md:mt-6 mt-4 w-full py-3 rounded bg-blue-600 text-white font-medium"
+              >
                 {" "}
                 {isAlreadyEnrolled ? "Already Enrolled" : "Enroll Now"}
               </button>

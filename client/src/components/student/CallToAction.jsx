@@ -1,5 +1,6 @@
 import React from "react";
 import { assets } from "../../assets/assets";
+import { Link } from "react-router-dom";
 
 const CallToAction = () => {
   return (
@@ -12,9 +13,11 @@ const CallToAction = () => {
         to join with us!
       </p>
       <div className="flex items-center font-medium gap-6 mt-4">
-        <button className="px-10 py-3 rounded-md text-white bg-blue-600">
-          Get Started
-        </button>
+        <Link to={"/course-list"}>
+          <button className="px-10 py-3 rounded-md text-white bg-blue-600">
+            Get Started
+          </button>
+        </Link>
         <button className="flex items-center gap-2">
           Learn more <img src={assets.arrow_icon} alt="arrow_icon" />
         </button>

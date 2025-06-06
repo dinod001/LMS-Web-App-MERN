@@ -1,21 +1,61 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import { Line } from "rc-progress";
 import Footer from "../../components/student/Footer";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const MyEnrollment = () => {
-  const { enrolledCourse, calculateCourseDuration, navigate } =
-    useContext(AppContext);
-  const [progressArray, setProgressArray] = useState([
-    { lectureCompleted: 4, totalLectures: 4 },
-    { lectureCompleted: 2, totalLectures: 6 },
-    { lectureCompleted: 4, totalLectures: 7 },
-    { lectureCompleted: 25, totalLectures: 40 },
-    { lectureCompleted: 3, totalLectures: 10 },
-    { lectureCompleted: 2, totalLectures: 25 },
-    { lectureCompleted: 6, totalLectures: 50 },
-    { lectureCompleted: 20, totalLectures: 30 },
-  ]);
+  const {
+    enrolledCourse,
+    calculateCourseDuration,
+    navigate,
+    fetchUserEnrolledCourse,
+    backendUrl,
+    userData,
+    getToken,
+    calculateNoOfLectures,
+  } = useContext(AppContext);
+  const [progressArray, setProgressArray] = useState([]);
+
+  const getCourseProgress = async () => {
+    try {
+      const token = await getToken();
+
+      const tempProgressArray = await Promise.all(
+        enrolledCourse.map(async (course) => {
+          const { data } = await axios.post(
+            `${backendUrl}/api/user/get-course-progress`,
+            { courseId: course._id },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          const totalLectures = calculateNoOfLectures(course);
+          const lectureCompleted = data.progressData
+            ? data.progressData.lectureCompleted.length
+            : 0;
+
+          return { totalLectures, lectureCompleted };
+        })
+      );
+
+      setProgressArray(tempProgressArray);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (userData) {
+      fetchUserEnrolledCourse();
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    if (enrolledCourse.length > 0) {
+      getCourseProgress();
+    }
+  }, [enrolledCourse]);
   return (
     <>
       <div className="md:px-36 px-8 pt-10">
